@@ -1,35 +1,54 @@
 #include <Step_Runner.h>
 
-#define LED1 13
-#define LED2 12
+#define LED_BLINK 13
+#define LED_PULSE 12
 
-void blinkLed1() {
-  digitalWrite(LED1, !digitalRead(LED1));
+// --- DEKLARASI OBJEK (1 Objek = 1 Tugas) ---
+Step_Runner taskBlink;
+Step_Runner taskOnDelay;
+Step_Runner taskOffDelay;
+
+// --- FUNGSI CALLBACK ---
+void blinkLed() {
+  digitalWrite(LED_BLINK, !digitalRead(LED_BLINK));
 }
 
-void blinkLed2() {
-  digitalWrite(LED2, !digitalRead(LED2));
+void printOneShot() {
+  Serial.println("Pesan ON-Delay: Muncul 1 KALI setelah jeda 3 detik!");
 }
 
-void printSerial() {
-  Serial.println("Running periodic task...");
+void pulseLed() {
+  digitalWrite(LED_PULSE, HIGH); // Nyalakan LED
+  Serial.println("Pesan OFF-Delay: LED_PULSE menyala selama 5 detik pertama...");
 }
-
-Step_Runner led1Task(blinkLed1, 500);
-Step_Runner led2Task(blinkLed2, 300);
-Step_Runner printTask(printSerial, 2000);
 
 void setup() {
-  pinMode(LED1, OUTPUT);
-  pinMode(LED2, OUTPUT);
-  Serial.begin(9600);
+  pinMode(LED_BLINK, OUTPUT);
+  pinMode(LED_PULSE, OUTPUT);
+  digitalWrite(LED_PULSE, LOW);
+  
+  Serial.begin(115200);
+  Serial.println("Sistem Dimulai!");
+
+  // Sinkronisasi waktu mulai agar akurat sejak setup selesai
+  taskOnDelay.reset();
+  taskOffDelay.reset();
 }
 
 void loop() {
-  led1Task.run();   // LED1 blink tiap 500ms
-  led2Task.run();   // LED2 blink tiap 300ms
-  printTask.run();  // Serial print tiap 2 detik
+  // 1. CONTOH PERIODIK (Berjalan terus-menerus setiap 500ms)
+  taskBlink.run(blinkLed, 500);
 
-  led1Task.set_interval(1000); // Ubah interval LED1 menjadi 1 detik setelah beberapa waktu
-  led2Task.timer_reset(); // Reset timer LED2 setelah beberapa waktu
+  // 2. CONTOH ON-DELAY / ONE-SHOT (Menunggu 3000ms, lalu dieksekusi 1x)
+  // Parameter ketiga (true) mengunci fungsi agar tidak berulang.
+  taskOnDelay.on_run(printOneShot, 3000, true);
+
+  // 3. CONTOH OFF-DELAY / PULSE TIMER (Berjalan terus selama 5000ms, lalu berhenti)
+  // Mengembalikan nilai 'false' jika waktu sudah habis.
+  bool isPulseActive = taskOffDelay.off_run(pulseLed, 5000);
+  
+  if (!isPulseActive) {
+    // Matikan LED jika durasi 5 detik sudah terlampaui
+    digitalWrite(LED_PULSE, LOW); 
+  }
 }
