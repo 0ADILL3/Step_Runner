@@ -11,7 +11,7 @@ bool Step_Runner::run(unsigned long interval)
 
   if (millis() - last_time_ >= interval)
   {
-    last_time_ = millis();
+    reset();
     return true;
   }
   return false;
@@ -34,7 +34,7 @@ bool Step_Runner::on_run(unsigned long duration, bool once)
 {
   if (!on_run_start_)
   {
-    last_time_ = millis();
+    reset();
     on_run_start_ = true;
   }
   
@@ -63,7 +63,7 @@ bool Step_Runner::off_run(unsigned long duration)
 {
   if (!off_run_start_)
   {
-    last_time_ = millis();
+    reset();
     off_run_start_ = true;
   }
   
