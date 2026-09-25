@@ -5,12 +5,18 @@
 
 // --- DEKLARASI OBJEK (1 Objek = 1 Tugas) ---
 Step_Runner taskBlink;
+Step_Runner taskPrint;
 Step_Runner taskOnDelay;
 Step_Runner taskOffDelay;
 
 // --- FUNGSI CALLBACK ---
 void blinkLed() {
   digitalWrite(LED_BLINK, !digitalRead(LED_BLINK));
+}
+
+void print(int val, bool state) {
+  Serial.printf("value: %d\n", val);
+  Serial.printf("state: %d\n", state);
 }
 
 void printOneShot() {
@@ -38,12 +44,15 @@ void setup() {
 void loop() {
   // 1. CONTOH PERIODIK (Berjalan terus-menerus setiap 500ms)
   taskBlink.run(blinkLed, 500);
+  
+  // 3. CONTOH FUNGSI PERIODIK dengan argumen dinamis (argumen diberikan setelah argumen interval)
+  taskPrint.run(print, 1000, 1, false);
 
-  // 2. CONTOH ON-DELAY / ONE-SHOT (Menunggu 3000ms, lalu dieksekusi 1x)
+  // 3. CONTOH ON-DELAY / ONE-SHOT (Menunggu 3000ms, lalu dieksekusi 1x)
   // Parameter ketiga (true) mengunci fungsi agar tidak berulang.
   taskOnDelay.on_run(printOneShot, 3000, true);
 
-  // 3. CONTOH OFF-DELAY / PULSE TIMER (Berjalan terus selama 5000ms, lalu berhenti)
+  // 4. CONTOH OFF-DELAY / PULSE TIMER (Berjalan terus selama 5000ms, lalu berhenti)
   // Mengembalikan nilai 'false' jika waktu sudah habis.
   bool isPulseActive = taskOffDelay.off_run(pulseLed, 5000);
   

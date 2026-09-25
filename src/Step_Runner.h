@@ -27,12 +27,24 @@ class Step_Runner
     bool run(unsigned long interval);
 
     /**
-     * @brief Eksekusi fungsi secara periodik (Blink Without Delay).
+     * @brief Eksekusi fungsi secara periodik dengan argumen dinamis (Blink Without Delay).
      * @param process Pointer ke fungsi yang akan dieksekusi (callback).
      * @param interval Jeda waktu antar eksekusi (dalam milidetik).
      * @return true jika fungsi dieksekusi pada siklus ini.
      */
-    bool run(void (*process)(), unsigned long interval);
+    template <typename... Args>
+    bool run(void (*process)(Args...), unsigned long interval, Args... args)
+    {
+      if (run(interval))
+      {
+        if (process != nullptr)
+        {
+          process(args...);
+          return true;
+        }
+      }
+      return false;
+    }
 
     /**
      * @brief Pengecekan penundaan (ON-Delay). Mengembalikan true SETELAH durasi terlampaui.
@@ -44,13 +56,25 @@ class Step_Runner
     bool on_run(unsigned long duration, bool once = false);
 
     /**
-     * @brief Mengeksekusi fungsi SETELAH penundaan waktu berlalu (ON-Delay).
+     * @brief Mengeksekusi fungsi SETELAH penundaan waktu berlalu dengan argumen dinamis (ON-Delay).
      * @param process Pointer ke fungsi yang akan dieksekusi (callback).
      * @param duration Lama waktu penundaan sebelum fungsi dieksekusi (dalam milidetik).
      * @param once Jika true, eksekusi (One-Shot) hanya terjadi 1x. Jika false, dieksekusi berulang setelah jeda.
      * @return true jika fungsi dieksekusi pada siklus ini.
      */
-    bool on_run(void (*process)(), unsigned long duration, bool once = false);
+    template <typename... Args>
+    bool on_run(void (*process)(Args...), unsigned long duration, bool once, Args... args)
+    {
+      if (on_run(duration, once))
+      {
+        if (process != nullptr)
+        {
+          process(args...);
+          return true;
+        }
+      }
+      return false;
+    }
 
     /**
      * @brief Pengecekan durasi aktif (Pulse Timer).
@@ -65,7 +89,19 @@ class Step_Runner
      * @param duration Batas waktu maksimal fungsi boleh dieksekusi (dalam milidetik).
      * @return true jika fungsi dieksekusi pada siklus ini.
      */
-    bool off_run(void (*process)(), unsigned long duration);
+    template <typename... Args>
+    bool off_run(void (*process)(Args...), unsigned long duration, Args... args)
+    {
+      if (off_run(duration))
+      {
+        if (process != nullptr)
+        {
+          process(args...);
+          return true;
+        }
+      }
+      return false;
+    }
 
     /**
      * @brief Mengatur ulang (reset) seluruh perhitungan waktu dan state.

@@ -17,19 +17,6 @@ bool Step_Runner::run(unsigned long interval)
   return false;
 }
 
-bool Step_Runner::run(void (*process)(), unsigned long interval)
-{
-  if (run(interval))
-  {
-    if (process != nullptr)
-    {
-      process();
-      return true;
-    }
-  }
-  return false;
-}
-
 bool Step_Runner::on_run(unsigned long duration, bool once)
 {
   if (!on_run_start_)
@@ -42,19 +29,6 @@ bool Step_Runner::on_run(unsigned long duration, bool once)
   {
     if (once) {on_run_done_ = true;}
     return true;
-  }
-  return false;
-}
-
-bool Step_Runner::on_run(void (*process)(), unsigned long duration, bool once)
-{
-  if (on_run(duration, once))
-  {
-    if (process != nullptr)
-    {
-      process();
-      return true;
-    }
   }
   return false;
 }
@@ -72,19 +46,6 @@ bool Step_Runner::off_run(unsigned long duration)
     return false;
   }
   return true;
-}
-
-bool Step_Runner::off_run(void (*process)(), unsigned long duration)
-{
-  if (off_run(duration))
-  {
-    if (process != nullptr)
-    {
-      process();
-      return true;
-    }
-  }
-  return false;
 }
 
 void Step_Runner::reset()
