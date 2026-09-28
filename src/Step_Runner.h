@@ -2,6 +2,18 @@
 
 #include <Arduino.h>
 
+/**
+ * @class Step_Runner
+ * @brief Utilitas non-blocking timer Arduino pengganti delay() berbasis millis().
+ * 
+ * Menyediakan tiga mode pewaktuan utama:
+ * - run(): Eksekusi interval secara periodik.
+ * - on_run(): Timer penundaan waktu (ON-Delay).
+ * - off_run(): Timer denyut / aktif sementara (Pulse Timer).
+ * 
+ * @note PENTING: Gunakan 1 objek eksklusif untuk 1 jenis fungsi saja (hanya run, on_run, atau off_run) 
+ *       untuk menghindari konflik memori waktu.
+ */
 class Step_Runner
 {
   private:

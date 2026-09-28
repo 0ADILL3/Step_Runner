@@ -1,4 +1,4 @@
-# Step_Runner Library
+# Step_Runner
 
 `Step_Runner` is a lightweight, non-blocking timer library for Arduino or other microcontrollers. It allows you to run functions (callbacks) based on time intervals without using the `delay()` function, keeping your main `loop()` free to process other tasks like reading sensors or handling button presses.
 
